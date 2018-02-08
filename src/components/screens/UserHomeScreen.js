@@ -25,6 +25,7 @@ export default class UserHomeScreen extends React.Component {
     ];
     this.showLogoutDialog = this.showLogoutDialog.bind(this);
     this.onPressLogoutDialogConfirm = this.onPressLogoutDialogConfirm.bind(this);
+    this.navigateToShare = this.navigateToShare.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +50,10 @@ export default class UserHomeScreen extends React.Component {
       });
   }
 
+  navigateToShare() {
+    this.refs.viewPager.setPageWithoutAnimation(3);
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -64,7 +69,7 @@ export default class UserHomeScreen extends React.Component {
             onPageScroll={this.onPagerScroll}
             indicator={this.renderTabIndicator()} >
             <View>
-              <UserDashboardTab />
+              <UserDashboardTab navigation={this.props.navigation} navigateToShare={this.navigateToShare} />
             </View>
             <View></View>
             <View></View>
