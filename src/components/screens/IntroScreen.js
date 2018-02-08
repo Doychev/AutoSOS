@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, TextInput, AsyncStorage } from 'react-native';
 import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager';
 import { Constants } from '../../Constants.js';
 import { Colors } from '../../Colors.js';
@@ -9,6 +9,7 @@ var {height, width} = Dimensions.get('window');
 import * as firebase from 'firebase';
 import { NavigationUtils } from '../../util/NavigationUtils';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Dialog from './../elements/Dialog';
 
 export default class IntroScreen extends React.Component {
   static navigationOptions = { title: 'Intro', header: null };
@@ -21,33 +22,46 @@ export default class IntroScreen extends React.Component {
       loginFieldsVisible : false,
       autoPlayEnable : true,
       spinnerVisible : false,
+      dialogDescriptionText : Strings.LOGIN_FAILED,
     }
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
+    this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setState({
       contentVisible: true,
       bottomButtonsVisible : true,
     });
 
-    firebase.auth().onAuthStateChanged((user) => {
+    var callToUnsubscribe = firebase.auth().onAuthStateChanged( async (user) => {
       if (user != null) {
-        var userId = firebase.auth().currentUser.uid;
-        firebase.database().ref('/users/' + userId).once('value').then((snapshot) => {
-          if (snapshot) {
-            console.log(snapshot);
-            // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        firebase.database().ref('/users/' + user.uid).once('value').then( async (snapshot) => {
+          if (snapshot.val()) {
+            await AsyncStorage.setItem(Constants.ASYNC_STORE_USER, JSON.stringify(snapshot.val()));
           } else {
-            console.log('errorReading');
+            //TODO only do this if it's a facebook reg
+            firebase.database().ref('/users/' + user.uid).set({
+              name: user.providerData[0].displayName,
+              email: user.providerData[0].email,
+              phoneNumber: "",
+              password: "",
+              cars: [],
+              isFbUser: true, //TODO fix that
+            }, (error) => {
+              this.showError();
+            });
           }
         }, (error) => {
-          console.log('errorCaught');
+          this.showError();
+          console.log(error);
         });
         this.hideSpinner();
+        callToUnsubscribe();
         NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'UserHome');
       }
-
-      // Do other things
     });
   }
 
@@ -60,9 +74,11 @@ export default class IntroScreen extends React.Component {
     if (type === 'success') {
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
       firebase.auth().signInWithCredential(credential).catch((error) => {
-        this.hideSpinner();
+        this.showError();
         console.log(error);
       });
+    } else {
+      this.showError();
     }
   }
 
@@ -92,6 +108,13 @@ export default class IntroScreen extends React.Component {
     this.loginWithFacebook();
   }
 
+  onPressDialogConfirm() {
+    this.dialog.hideDialog();
+    if (this.state.reportSucceeded) {
+      this.props.navigation.dispatch(NavigationActions.back());
+    }
+  }
+
   showSpinner() {
     this.setState({ spinnerVisible : true});
   }
@@ -100,11 +123,23 @@ export default class IntroScreen extends React.Component {
     this.setState({ spinnerVisible : false});
   }
 
+  showError(message) {
+    if (message) {
+      this.setState({
+        dialogDescriptionText : message,
+      });
+    }
+    this.hideSpinner();
+    this.dialog.showDialog();
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.statusBarOverlay}/>
         <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={Strings.LOADING} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Dialog ref={(dialog) => { this.dialog = dialog; }} dialogConfirm={this.onPressDialogConfirm} dismissable={false}
+          description={this.state.dialogDescriptionText} confirmText={Strings.OK}/>
         <FadeAnimation style={styles.container} visible={this.state.contentVisible}>
           <IndicatorViewPager
             ref="viewPager"

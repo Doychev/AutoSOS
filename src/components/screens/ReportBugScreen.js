@@ -194,4 +194,5 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontSize: 20,
     fontWeight: 'bold',
-  },});
+  },
+});

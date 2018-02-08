@@ -7,6 +7,10 @@ export const Strings = {
   EMAIL_PLACEHOLDER : "Твоят имейл",
   PASSWORD_PLACEHOLDER : "Твоята парола",
   LOGIN_DISCLAIMER : "Използвайки приложението, Вие се съгласявате с общите условия и периодичната им редакция, с или без уведомление.",
+  LOGIN_FAILED : "Неуспешен вход!",
+
+  NAME_PLACEHOLDER : "Твоето име (лично и фамилия)",
+  PHONE_PLACEHOLDER : "Твоят телефонен номер",
 
   WELCOME : "Здравей",
 
@@ -38,4 +42,14 @@ export const Strings = {
   EMPTY_FIELDS : "Моля, попълнете всички полета!",
   FAILED_SUBMIT_REPORT : "Получи се грешка при изпращенето. Моля, опитайте отново.",
   SUBMITTED_REPORT : "Проблемът беше докладван. Благодарим Ви!",
+
+  SAVE : "Запази",
+
+  SAVE_FAILED : "Получи се грешка при запазването. Моля, опитайте отново.",
+  SAVE_SUCCESS : "Профилът беше запазен.",
+
+  REQUEST_SERVICE : "Заяви услуга",
+  EXPLORE_REPAIR_SHOPS : "Разгледай сервизите",
+  CHANGE_PROFILE : "Промени профила си",
+  SHARE_AND_WIN : "Сподели и спечели",
 };

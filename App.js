@@ -4,12 +4,14 @@ import SplashScreen from './src/components/screens/SplashScreen';
 import IntroScreen from './src/components/screens/IntroScreen';
 import UserHomeScreen from './src/components/screens/UserHomeScreen';
 import ReportBugScreen from './src/components/screens/ReportBugScreen';
+import ProfileScreen from './src/components/screens/ProfileScreen';
 
 const App = StackNavigator({
   Splash: { screen: SplashScreen },
   Intro: { screen: IntroScreen },
   UserHome: { screen: UserHomeScreen },
   ReportBug: { screen: ReportBugScreen },
+  Profile: { screen: ProfileScreen },
 }, {
   headerMode: 'none',
 });

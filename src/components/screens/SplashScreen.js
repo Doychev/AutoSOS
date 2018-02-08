@@ -12,6 +12,13 @@ export default class SplashScreen extends React.Component {
 
   static navigationOptions = { title: 'Splash', header: null };
 
+  constructor(props){
+    super(props);
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
+  }
+
   loadFont = () => {
     Expo.Font.loadAsync({
       'autobus': require('../../assets/fonts/autobus.ttf'),
@@ -26,13 +33,14 @@ export default class SplashScreen extends React.Component {
   async componentDidMount() {
     var screen = 'Intro';
 
-    await firebase.auth().onAuthStateChanged((user) => {
+    var callToUnsubscribe = await firebase.auth().onAuthStateChanged((user) => {
       if (user != null) {
         screen = 'UserHome';
       } else {
         screen = 'Intro';
       }
     });
+    callToUnsubscribe();
     timer.setTimeout(this, 'Splash Timer', () => NavigationUtils.navigateWithoutBackstack(this.props.navigation, screen), Constants.SPLASH_DELAY_MILLIS);
   }
 

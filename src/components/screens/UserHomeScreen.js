@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, TextInput, AsyncStorage } from 'react-native';
 import { IndicatorViewPager, PagerTabIndicator } from 'rn-viewpager';
 import { Constants } from '../../Constants.js';
 import { Colors } from '../../Colors.js';
@@ -20,6 +20,9 @@ export default class UserHomeScreen extends React.Component {
     this.state = {
       contentVisible : false,
     }
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
     this.showLogoutDialog = this.showLogoutDialog.bind(this);
     this.onPressLogoutDialogConfirm = this.onPressLogoutDialogConfirm.bind(this);
   }
@@ -38,10 +41,11 @@ export default class UserHomeScreen extends React.Component {
     const navigation = this.props.navigation;
     firebase.auth().signOut()
       .then(function() {
+        AsyncStorage.removeItem(Constants.ASYNC_STORE_USER);
         NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
       })
       .catch(function(error) {
-        NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
+        // NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
       });
   }
 

@@ -21,4 +21,6 @@ export const Constants = {
   BOTTOM_BAR_HEIGHT : 60,
   BOTTOM_BAR_ICON_HEIGHT : 30,
 
+  ASYNC_STORE_USER : "@AutoSosDataStore:UserData",
+
 };
