@@ -1,0 +1,24 @@
+{
+  "name": "AutoSOS",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "node node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "expo": "^25.0.0",
+    "firebase": "^4.9.1",
+    "react": "16.2.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+    "react-native-loading-spinner-overlay": "^0.5.2",
+    "react-native-popup-dialog": "^0.10.46",
+    "react-native-timer": "^1.3.1",
+    "react-navigation": "^1.0.0-beta.30",
+    "rn-viewpager": "^1.2.9"
+  }
+}

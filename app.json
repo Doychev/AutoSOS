@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "AutoSOS",
+    "icon": "./src/images/app_icon.png",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "slug": "AutoSOS",
+    "sdkVersion": "25.0.0",
+    "ios": {
+      "bundleIdentifier": "com.handyman.autosos"
+    },
+    "android": {
+      "package": "com.handyman.autosos"
+    },
+  }
+}
