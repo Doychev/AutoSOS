@@ -52,4 +52,17 @@ export const Strings = {
   EXPLORE_REPAIR_SHOPS : "Разгледай сервизите",
   CHANGE_PROFILE : "Промени профила си",
   SHARE_AND_WIN : "Сподели и спечели",
+
+  SHARE_DESCRIPTION : "За всеки твой приятел, който се възползва от услугите на AutoSOS, ти ще получиш ваучер за отстъпка от 10 лева при следваща услуга в AutoSOS!",
+  SHARE_CODE_DESC : "Твоят уникален код:",
+  SHARE_WITH_FRIENDS : "Сподели сега!",
+
+  SHARE_DESC : "Спести време и пари с AutoSOS - твоят авто-асистент при нужда от ремонт! Регистрирай се с код: ",
+  SHARE_LINK : "http://autosos.com",
+  SHARE_TITLE : "AutoSOS - твоят личен авто-помощник!",
+
+  UNKNOWN_ERROR : "Получи се грешка при комуникацията със сървъра. Моля, опитайте отново.",
+
+  REPAIR_SHOPS_LIST : "Списък",
+  REPAIR_SHOPS_map : "Карта",
 };

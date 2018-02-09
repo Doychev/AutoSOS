@@ -40,9 +40,11 @@ export default class IntroScreen extends React.Component {
       if (user != null) {
         firebase.database().ref('/users/' + user.uid).once('value').then( async (snapshot) => {
           if (snapshot.val()) {
+            //registered
             await AsyncStorage.setItem(Constants.ASYNC_STORE_USER, JSON.stringify(snapshot.val()));
           } else {
             //TODO only do this if it's a facebook reg
+            //not registered
             firebase.database().ref('/users/' + user.uid).set({
               name: user.providerData[0].displayName,
               email: user.providerData[0].email,
@@ -52,6 +54,7 @@ export default class IntroScreen extends React.Component {
               isFbUser: true, //TODO fix that
             }, (error) => {
               this.showError();
+              return;
             });
           }
         }, (error) => {

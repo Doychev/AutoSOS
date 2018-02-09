@@ -7,6 +7,8 @@ import { Strings } from '../../Strings.js';
 import FadeAnimation from '../elements/FadeAnimation';
 import UserDashboardTab from '../tabs/UserDashboardTab';
 import UserMoreTab from '../tabs/UserMoreTab';
+import UserShareTab from '../tabs/UserShareTab';
+import UserMapTab from '../tabs/UserMapTab';
 import Dialog from './../elements/Dialog';
 var {height, width} = Dimensions.get('window');
 import * as firebase from 'firebase';
@@ -72,8 +74,12 @@ export default class UserHomeScreen extends React.Component {
               <UserDashboardTab navigation={this.props.navigation} navigateToShare={this.navigateToShare} />
             </View>
             <View></View>
-            <View></View>
-            <View></View>
+            <View>
+              <UserMapTab />
+            </View>
+            <View>
+              <UserShareTab />
+            </View>
             <View>
               <UserMoreTab navigation={this.props.navigation} showLogoutDialog={this.showLogoutDialog}/>
             </View>

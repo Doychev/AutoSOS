@@ -23,4 +23,7 @@ export const Constants = {
 
   ASYNC_STORE_USER : "@AutoSosDataStore:UserData",
 
+  DEFAULT_MAP_LATITUDE : 42.698334,
+  DEFAULT_MAP_LONGITUDE : 23.319941,
+  DEFAULT_MAP_ZOOM : 0.1,
 };

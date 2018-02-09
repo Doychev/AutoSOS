@@ -52,7 +52,7 @@ export default class SplashScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View>
-          <Image style={styles.logo} resizeMode='contain' source={require('../../images/splash_icon.png')}/>
+          <Image style={styles.logo} resizeMode='contain' source={require('../../images/app_icon.png')}/>
         </View>
       </View>
     );
