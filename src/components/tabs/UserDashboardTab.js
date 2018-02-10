@@ -36,7 +36,7 @@ export default class UserDashboardTab extends React.Component {
 
     // Get the download URL
     starsRef.getDownloadURL().then(function(url) {
-      console.log(url);
+      // console.log(url);
       this.setState({
         adImage: url,
       })
@@ -65,11 +65,11 @@ export default class UserDashboardTab extends React.Component {
   }
 
   onPressRequestService = () => {
-    // this.props.navigation.navigate('Profile');
+    this.props.navigation.navigate('ServiceRequest');
   }
 
   onPressExploreRepairShops = () => {
-    // this.props.navigation.navigate('Profile');
+    this.props.navigateToExplore();
   }
 
   onPressChangeProfile = () => {

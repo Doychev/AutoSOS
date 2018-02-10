@@ -9,6 +9,7 @@ export const Colors = {
   DARK_GRAY : "#6B6E73",
   LIGHT_GRAY : "#DCDCDC",
   RED : "#FF0000",
+  GREEN : "#00AA00",
   OVERLAY : "#AAAAAA99",
   TRANSPARENT : "#00000000",
 };

@@ -9,6 +9,7 @@ import UserDashboardTab from '../tabs/UserDashboardTab';
 import UserMoreTab from '../tabs/UserMoreTab';
 import UserShareTab from '../tabs/UserShareTab';
 import UserMapTab from '../tabs/UserMapTab';
+import UserServicesTab from '../tabs/UserServicesTab';
 import Dialog from './../elements/Dialog';
 var {height, width} = Dimensions.get('window');
 import * as firebase from 'firebase';
@@ -22,15 +23,30 @@ export default class UserHomeScreen extends React.Component {
     this.state = {
       contentVisible : false,
     }
-    console.ignoredYellowBox = [
-      'Setting a timer'
-    ];
     this.showLogoutDialog = this.showLogoutDialog.bind(this);
     this.onPressLogoutDialogConfirm = this.onPressLogoutDialogConfirm.bind(this);
     this.navigateToShare = this.navigateToShare.bind(this);
+    this.navigateToExplore = this.navigateToExplore.bind(this);
   }
 
+  componentWillUnmount() {
+    this._sub.remove();
+    // this._sub2.remove();
+  }
+
+  focused() {
+    if (this.servicesTab) {
+      this.servicesTab.refresh();
+    }
+  }
+
+  // blured() {
+  //
+  // }
+
   componentDidMount() {
+    this._sub = this.props.navigation.addListener('didFocus', this.focused.bind(this));
+    // this._sub2 = this.props.navigation.addListener('didBlur', this.blured.bind(this));
     this.setState({
       contentVisible: true,
     });
@@ -43,17 +59,21 @@ export default class UserHomeScreen extends React.Component {
   onPressLogoutDialogConfirm() {
     const navigation = this.props.navigation;
     firebase.auth().signOut()
-      .then(function() {
-        AsyncStorage.removeItem(Constants.ASYNC_STORE_USER);
-        NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
-      })
-      .catch(function(error) {
-        // NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
-      });
+    .then(function() {
+      AsyncStorage.removeItem(Constants.ASYNC_STORE_USER);
+      NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
+    })
+    .catch(function(error) {
+      // NavigationUtils.navigateWithoutBackstack(navigation, 'Intro');
+    });
   }
 
   navigateToShare() {
     this.refs.viewPager.setPageWithoutAnimation(3);
+  }
+
+  navigateToExplore() {
+    this.refs.viewPager.setPageWithoutAnimation(2);
   }
 
   render() {
@@ -71,9 +91,13 @@ export default class UserHomeScreen extends React.Component {
             onPageScroll={this.onPagerScroll}
             indicator={this.renderTabIndicator()} >
             <View>
-              <UserDashboardTab navigation={this.props.navigation} navigateToShare={this.navigateToShare} />
+              <UserDashboardTab navigation={this.props.navigation}
+                navigateToExplore={this.navigateToExplore} navigateToShare={this.navigateToShare} />
             </View>
-            <View></View>
+            <View>
+              <UserServicesTab ref={(servicesTab) => { this.servicesTab = servicesTab; }}
+                 navigation={this.props.navigation} />
+            </View>
             <View>
               <UserMapTab />
             </View>

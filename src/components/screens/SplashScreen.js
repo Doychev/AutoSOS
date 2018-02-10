@@ -14,9 +14,6 @@ export default class SplashScreen extends React.Component {
 
   constructor(props){
     super(props);
-    console.ignoredYellowBox = [
-      'Setting a timer'
-    ];
   }
 
   loadFont = () => {

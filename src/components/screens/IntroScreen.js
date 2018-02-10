@@ -24,9 +24,6 @@ export default class IntroScreen extends React.Component {
       spinnerVisible : false,
       dialogDescriptionText : Strings.LOGIN_FAILED,
     }
-    console.ignoredYellowBox = [
-      'Setting a timer'
-    ];
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
 
@@ -50,7 +47,7 @@ export default class IntroScreen extends React.Component {
               email: user.providerData[0].email,
               phoneNumber: "",
               password: "",
-              cars: [],
+              cars: "",
               isFbUser: true, //TODO fix that
             }, (error) => {
               this.showError();
@@ -59,7 +56,6 @@ export default class IntroScreen extends React.Component {
           }
         }, (error) => {
           this.showError();
-          console.log(error);
         });
         this.hideSpinner();
         callToUnsubscribe();
@@ -133,7 +129,9 @@ export default class IntroScreen extends React.Component {
       });
     }
     this.hideSpinner();
-    this.dialog.showDialog();
+    if (this.dialog) {
+      this.dialog.showDialog();
+    }
   }
 
   render() {

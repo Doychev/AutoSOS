@@ -7,7 +7,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from '../elements/Dialog';
 import * as firebase from 'firebase';
 
-export default class UserDashboardTab extends React.Component {
+export default class UserShareTab extends React.Component {
 
   constructor(props) {
     super(props);
