@@ -93,7 +93,7 @@ export default class UserDashboardTab extends React.Component {
             this.state.adImage ?
             <Image style={styles.adImage} resizeMode='cover' source={{uri: this.state.adImage}}/>
             :
-            <Text style={styles.tempText}>Тука че има реклами</Text>
+            <Text style={styles.tempText}>Реклама</Text>
           }
         </View>
         <View style={styles.navigationView}>

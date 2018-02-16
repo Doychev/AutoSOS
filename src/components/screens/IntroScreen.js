@@ -23,6 +23,7 @@ export default class IntroScreen extends React.Component {
       autoPlayEnable : true,
       spinnerVisible : false,
       dialogDescriptionText : Strings.LOGIN_FAILED,
+      isFbReg: false,
     }
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
@@ -40,19 +41,21 @@ export default class IntroScreen extends React.Component {
             //registered
             await AsyncStorage.setItem(Constants.ASYNC_STORE_USER, JSON.stringify(snapshot.val()));
           } else {
-            //TODO only do this if it's a facebook reg
             //not registered
-            firebase.database().ref('/users/' + user.uid).set({
-              name: user.providerData[0].displayName,
-              email: user.providerData[0].email,
-              phoneNumber: "",
-              password: "",
-              cars: "",
-              isFbUser: true, //TODO fix that
-            }, (error) => {
-              this.showError();
-              return;
-            });
+            if (this.state.isFbReg) {
+              firebase.database().ref('/users/' + user.uid).set({
+                name: user.providerData[0].displayName,
+                email: user.providerData[0].email,
+                phoneNumber: "",
+                password: "",
+                cars: "",
+                isFbUser: true, //TODO fix that
+                userType: "user",
+              }, (error) => {
+                this.showError();
+                return;
+              });
+            }
           }
         }, (error) => {
           this.showError();
@@ -65,6 +68,9 @@ export default class IntroScreen extends React.Component {
   }
 
   async loginWithFacebook() {
+    this.setState({
+      isFbReg: true,
+    });
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       Constants.getEnvironment().FACEBOOK_APP_ID,
       { permissions: Constants.FACEBOOK_PERMISSIONS }
@@ -95,6 +101,11 @@ export default class IntroScreen extends React.Component {
 
   onPressLogin = async () => {
     this.showSpinner();
+    this.setState({
+      isFbReg: false,
+    });
+
+    //todo real login
     this.setState({
       loginFieldsVisible: false,
       bottomButtonsVisible: true,

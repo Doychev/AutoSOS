@@ -30,7 +30,36 @@ export default class UserShareTab extends React.Component {
           })
           this.hideSpinner();
         } else {
-          this.showError();
+          firebase.database().ref('/shareCodes/nextShareCode').once('value').then( async (snapshot) => {
+            var nextShareCode = snapshot.val();
+            if (nextShareCode) {
+              var updateObject = {};
+              updateObject[user.uid.toString()] = nextShareCode;
+              firebase.database().ref('/shareCodes/').update(updateObject, (error) => {
+                if (error) {
+                  this.showError();
+                  return;
+                }
+              });
+              firebase.database().ref('/shareCodes/').update({
+                nextShareCode: nextShareCode + 1,
+              }, (error) => {
+                if (error) {
+                  this.showError();
+                  return;
+                }
+              });
+              this.setState({
+                shareCode: nextShareCode,
+              });
+              this.hideSpinner();
+            } else {
+              this.showError();
+            }
+          }, (error) => {
+            this.showError();
+            console.log(error);
+          });
         }
       }, (error) => {
         this.showError();

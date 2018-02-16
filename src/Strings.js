@@ -31,12 +31,16 @@ export const Strings = {
   SETTINGS : "Настройки",
   PROFILE : "Профил",
   SUPPORT : "Помощ",
-  REPORT_BUG : "Докладвай за проблем",
   LOGOUT : "Изход",
 
   LOGOUT_DESC : "Сигурен ли си, че искаш да излезеш от профила си?",
   CONFIRM_LOGOUT : "Изход",
   CANCEL : "Откажи",
+
+  TERMS : "Условия за ползване",
+  FAQ : "Често задавани въпроси",
+  REPORT_BUG : "Докладвай за проблем",
+  SUBMIT_HELP : "Задай въпрос",
 
   LOADING : "Зареждане...",
 
