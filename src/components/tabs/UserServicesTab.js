@@ -83,8 +83,8 @@ export default class UserServicesTab extends React.Component {
     // this.props.hideLocationInfo();
   }
 
-  onPressItem = () => {
-    console.log('done');
+  onPressItem = (item) => {
+    console.log(item);
   }
 
   render() {

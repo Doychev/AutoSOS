@@ -7,7 +7,7 @@ import { Constants } from '../../Constants.js';
 export default class ServiceItem extends React.Component {
 
   onPress = () => {
-    this.props.onPressItem(this.props.item.uniqueId);
+    this.props.onPressItem(this.props.item);
   }
 
   getStatusText = () => {

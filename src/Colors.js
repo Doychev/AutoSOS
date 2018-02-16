@@ -12,4 +12,8 @@ export const Colors = {
   GREEN : "#00AA00",
   OVERLAY : "#AAAAAA99",
   TRANSPARENT : "#00000000",
+  PURPLE : "#7B00D9",
+  ORANGE : "#FF8C00",
+  PIN_GREEN: "#48BA37",
+  GOLD : "#FFD700",
 };

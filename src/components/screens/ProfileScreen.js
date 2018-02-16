@@ -25,6 +25,7 @@ export default class ProfileScreen extends React.Component {
       phoneNumber: "",
       shouldGoBack: false,
       cars: [],
+      addCarButtonVisible: true,
     };
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
@@ -163,6 +164,7 @@ export default class ProfileScreen extends React.Component {
     }
     this.setState({
       cars: cars,
+      addCarButtonVisible: cars.length < 5,
     })
   }
 
@@ -175,6 +177,7 @@ export default class ProfileScreen extends React.Component {
     cars.pop();
     this.setState({
       cars: cars,
+      addCarButtonVisible: cars.length < 5,
     });
   }
 
@@ -272,11 +275,15 @@ export default class ProfileScreen extends React.Component {
               this.renderCar(car, i))
               : null
             }
-            <TouchableOpacity style={[styles.submitButton, {backgroundColor: Colors.ACCENT_LIGHT}]} onPress={this.onPressAddCar}>
-              <Text style={styles.submitButtonText}>
-                {Strings.ADD_CAR.toUpperCase()}
-              </Text>
-            </TouchableOpacity>
+            {
+              this.state.addCarButtonVisible ?
+              <TouchableOpacity style={[styles.submitButton, {backgroundColor: Colors.ACCENT_LIGHT}]} onPress={this.onPressAddCar}>
+                <Text style={styles.submitButtonText}>
+                  {Strings.ADD_CAR.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+              : null
+            }
           </View>
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={this.onPressSubmit}>

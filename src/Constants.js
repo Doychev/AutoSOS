@@ -26,4 +26,25 @@ export const Constants = {
   DEFAULT_MAP_LATITUDE : 42.698334,
   DEFAULT_MAP_LONGITUDE : 23.319941,
   DEFAULT_MAP_ZOOM : 0.1,
+
+  SHOP_TYPE : {
+    REPAIRS : 1,
+    CARWASH : 2,
+    TYRES : 3,
+    OTHER : 4,
+  },
+
+  SUBSCIPTION_PLAN : {
+    UNCLAIMED : 0,
+    SILVER : 1,
+    GOLD : 2,
+    PLATINUM : 3,
+  },
+
+  DEFAULT_MARKER_NAME : "other_unclaimed",
+  BASIC_MARKER_SIZE : 15,
+  CLAIMED_MARKER_MULTIPLIER : 2,
+  MARKER_ASPECT_RATIO : 1.35,
+  LIST_ICON_PLATINUM : 1.3,
+
 };

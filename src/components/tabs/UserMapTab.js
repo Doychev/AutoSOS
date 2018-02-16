@@ -8,12 +8,22 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from '../elements/Dialog';
 import * as firebase from 'firebase';
 import { MapView } from 'expo';
+import { MarkerIconUtils } from '../../util/MarkerIconUtils.js';
+import MarkerView from '../elements/MarkerView.js';
+import LocationInfo from './../elements/LocationInfo';
 
 export default class UserMapTab extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      locationInfo: {
+        visible: false,
+        title: "",
+        address: "",
+        longitude: "",
+        latitude: "",
+      },
       spinnerVisible: false,
       dialogDescriptionText: Strings.UNKNOWN_ERROR,
       mapRegion: {
@@ -24,6 +34,7 @@ export default class UserMapTab extends React.Component {
       },
     }
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
+    this.onPressMarker = this.onPressMarker.bind(this);
     this.onRegionChange = this.onRegionChange.bind(this);
   }
 
@@ -32,11 +43,24 @@ export default class UserMapTab extends React.Component {
   }
 
   async componentDidMount() {
+    this.searchShops();
+  }
 
+  searchShops() {
+    const ref = firebase.database().ref().child('/shops/');
+    var shops = [];
+    ref.once('value', async (snapshot) => {
+      snapshot.forEach(item => { shops.push(item.val()) });
+      this.handleShops(shops);
+      this.hideSpinner();
+    }, (error) => {
+      this.showError();
+      console.log(error);
+    });
   }
 
   onPressMap = (event) => {
-
+    this.hideLocationInfo();
   }
 
   showSpinner() {
@@ -61,7 +85,121 @@ export default class UserMapTab extends React.Component {
     this.dialog.hideDialog();
   }
 
+  async handleShops(shops) {
+    var currentMarkers = [];
+    for (var result of shops) {
+      currentMarkers.push(result);
+      currentMarkers[currentMarkers.length - 1].markerIcon = await MarkerIconUtils.getMarkerIcon(currentMarkers[currentMarkers.length - 1]);
+      // currentMarkers[currentMarkers.length - 1].distance = this.calculateDistance(currentMarkers[currentMarkers.length - 1]);
+    }
+
+    await this.setState({
+      unfilteredMarkers: currentMarkers,
+    });
+
+    this.filterMarkers();
+  }
+
+  async filterMarkers() {
+    // var dispensaries = this.state.filtersActive.dispensaries;
+    // var doctors = this.state.filtersActive.doctors;
+    // var headShops = this.state.filtersActive.headShops;
+
+    // var filteredMarkers = [];
+    // for (var marker of this.state.markers) {
+    //   if ((dispensaries && doctors && headShops) === true ||
+    //   (!dispensaries && !doctors && !headShops) === true ||
+    //   (dispensaries && (marker.isRecreational == 'true' || marker.isMedical == 'true' ||
+    //   marker.isRecreational == true || marker.isMedical == true)) === true ||
+    //   (headShops && (marker.isHeadShop == 'true' || marker.isHeadShop == true)) === true ||
+    //   (doctors && (marker.isDoctor == 'true' || marker.isDoctor == true)) === true) {
+    //
+    //     filteredMarkers.push(marker);
+    //   }
+    // }
+
+    await this.setState({
+      markers: this.state.unfilteredMarkers,
+    });
+
+    // this.submitImpressions(AnalyticsUtils.IMPRESSION_TYPE.LOCATE_PIN);
+    // this.locateMapTab.handleLocationResults(filteredMarkers);
+    // this.locateListTab.handleLocationResults(filteredMarkers);
+    this.map.fitToElements(true);
+    this.hideSpinner();
+  }
+
+  getMarkerIconSize = (marker) => {
+    return MarkerIconUtils.getMarkerIconSize(marker);
+  }
+
+  onPressMarker = (event) => {
+    var marker;
+    for (var currentMarker of this.state.markers) {
+      if (event.id == currentMarker.uniqueId) {
+        marker = currentMarker;
+        break;
+      }
+    }
+    this.showLocationInfo({
+      title: marker.name,
+      address: marker.address,
+      latitude: marker.latitude,
+      longitude: marker.longitude,
+    });
+  }
+
+  async showLocationInfo(info) {
+    await this.setState({
+      locationInfo: {
+        visible: true,
+        title: info.title,
+        address: info.address,
+        longitude: info.longitude,
+        latitude: info.latitude,
+      },
+    });
+  }
+
+  hideLocationInfo() {
+    this.setState({
+      locationInfo: {
+        visible: false,
+      },
+    })
+  }
+
+  getImageSource = (markerIcon) => {
+    var source;
+    if (typeof markerIcon == 'string') {
+      source = {uri: markerIcon};
+    }  else {
+      source = markerIcon;
+    }
+    return source;
+  }
+
+  onPressSwitch = () => {
+
+  }
+
+  getMarkerView = (marker) => {
+    return (
+      <MapView.Marker
+        key={marker.uniqueId}
+        identifier={marker.uniqueId.toString()}
+        coordinate={{
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+        }}
+        onPress={e => this.onPressMarker(e.nativeEvent)}
+        image={this.getImageSource(marker.markerIcon)}>
+      </MapView.Marker>
+    );
+  }
+
   render() {
+    var markers = this.state.markers || [];
     return (
       <View style={styles.container}>
         <Toolbar title={Strings.REPAIR_SHOPS.toUpperCase()}/>
@@ -74,12 +212,21 @@ export default class UserMapTab extends React.Component {
           style={styles.mapStyle}
           initialRegion={this.state.mapRegion}
           onRegionChange={this.onRegionChange}>
+          {
+            markers.map(marker => this.getMarkerView(marker))
+          }
         </MapView>
         <TouchableOpacity style={styles.switchButton} onPress={this.onPressSwitch}>
           <Text style={styles.switchButtonText}>
             {Strings.REPAIR_SHOPS_LIST}
           </Text>
         </TouchableOpacity>
+        <LocationInfo
+          visible={this.state.locationInfo.visible}
+          title={this.state.locationInfo.title}
+          address={this.state.locationInfo.address}
+          latitude={this.state.locationInfo.latitude}
+          longitude={this.state.locationInfo.longitude} />
       </View>
     );
   }

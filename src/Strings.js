@@ -98,4 +98,6 @@ export const Strings = {
   ADD_CAR : "Добави автомобил",
   CAR : "Автомобил",
   PICK_CAR : "Изберете автомобил:",
+
+  MORE_DETAILS : "Още детайли",
 };
