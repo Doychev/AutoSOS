@@ -104,4 +104,21 @@ export const Strings = {
   PICK_CAR : "Изберете автомобил:",
 
   MORE_DETAILS : "Още детайли",
+
+  SERVICE_DETAILS : "Детайли за услуга",
+  UPDATE_DESCRIPTION : "Допълни описанието",
+  ORDER_DATE_DESCRIPTION : "Дата на заявка",
+  ORDER_NAME_DESCRIPTION : "Име на заявителя",
+  ORDER_PHONE_DESCRIPTION : "Телефон за връзка",
+
+  CAR_INFO : "Информация за автомобил",
+  ORDER_INFO : "Информация за поръчка",
+  CAR_BRAND : "Марка",
+  CAR_MODEL : "Модел",
+  CAR_YEAR : "Година на производство",
+  CAR_REG_NUMBER: "Регистрационен номер",
+  SELECTED_REPAIR_SHOP : "Избран сервиз",
+  SERVICE_DESCRIPTION : "Описание",
+  SUBMITTED_UPDATE : "Описанието беше допълнено успешно. Благодарим Ви!",
+  DESCRIPTION_ADDITION : "Допълнение към описанието"
 };

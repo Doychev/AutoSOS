@@ -33,7 +33,7 @@ export default class UserServicesTab extends React.Component {
     const ref = firebase.database().ref().child('/serviceRequests/' + firebase.auth().currentUser.uid);
     var data = [];
     ref.once('value', async (snapshot) => {
-      snapshot.forEach(item => { data.push(item.val()) });
+      snapshot.forEach(item => { data.push({key: item.key, data: item.val()}); });
       await this.setState({
         requestsData: data,
       });
@@ -84,7 +84,7 @@ export default class UserServicesTab extends React.Component {
   }
 
   onPressItem = (item) => {
-    console.log(item);
+    this.props.navigation.navigate('ServiceReview', {item: item});
   }
 
   render() {

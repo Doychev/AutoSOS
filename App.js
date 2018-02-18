@@ -6,6 +6,7 @@ import UserHomeScreen from './src/components/screens/UserHomeScreen';
 import ReportBugScreen from './src/components/screens/ReportBugScreen';
 import ProfileScreen from './src/components/screens/ProfileScreen';
 import ServiceRequestScreen from './src/components/screens/ServiceRequestScreen';
+import ServiceReviewScreen from './src/components/screens/ServiceReviewScreen';
 import SupportScreen from './src/components/screens/SupportScreen';
 
 const App = StackNavigator({
@@ -15,6 +16,7 @@ const App = StackNavigator({
   ReportBug: { screen: ReportBugScreen },
   Profile: { screen: ProfileScreen },
   ServiceRequest: { screen: ServiceRequestScreen },
+  ServiceReview: { screen: ServiceReviewScreen },
   Support: { screen: SupportScreen },
 }, {
   headerMode: 'none',

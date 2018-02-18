@@ -11,12 +11,12 @@ export default class ServiceItem extends React.Component {
   }
 
   getStatusText = () => {
-    return Strings.REQUEST_STATUS[this.props.item.status];
+    return Strings.REQUEST_STATUS[this.props.item.data.status];
   }
 
   getStatusTextStyle = () => {
     var status = [styles.status];
-    switch (this.props.item.status) {
+    switch (this.props.item.data.status) {
       case 0:
       status.push({color: Colors.BLACK});
       break;
@@ -43,8 +43,8 @@ export default class ServiceItem extends React.Component {
             <Image style={styles.markerIcon} resizeMode='contain' source={this.props.iconSource} />
           </View>
           <View style={styles.textContents}>
-            <Text ellipsizeMode='tail' numberOfLines={1} style={styles.date}>{Strings.DATE}: {this.props.item.date.slice(0,10)}</Text>
-            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.description}>{Strings.DESCRIPTION}: {this.props.item.serviceDescription}</Text>
+            <Text ellipsizeMode='tail' numberOfLines={1} style={styles.date}>{Strings.DATE}: {this.props.item.data.date.slice(0,10)}</Text>
+            <Text ellipsizeMode='tail' numberOfLines={2} style={styles.description}>{Strings.DESCRIPTION}: {this.props.item.data.serviceDescription}</Text>
             <View style={styles.row}>
               <Text ellipsizeMode='tail' numberOfLines={1} style={styles.statusDesc}>{Strings.STATUS}: </Text>
               <Text ellipsizeMode='tail' numberOfLines={1} style={this.getStatusTextStyle()}>{this.getStatusText()}</Text>
