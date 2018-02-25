@@ -19,10 +19,7 @@ export default class UserMapTab extends React.Component {
     this.state = {
       locationInfo: {
         visible: false,
-        title: "",
-        address: "",
-        longitude: "",
-        latitude: "",
+        marker: {},
       },
       spinnerVisible: false,
       dialogDescriptionText: Strings.UNKNOWN_ERROR,
@@ -141,22 +138,14 @@ export default class UserMapTab extends React.Component {
         break;
       }
     }
-    this.showLocationInfo({
-      title: marker.name,
-      address: marker.address,
-      latitude: marker.latitude,
-      longitude: marker.longitude,
-    });
+    this.showLocationInfo(marker);
   }
 
   async showLocationInfo(info) {
     await this.setState({
       locationInfo: {
         visible: true,
-        title: info.title,
-        address: info.address,
-        longitude: info.longitude,
-        latitude: info.latitude,
+        marker: info,
       },
     });
   }
@@ -222,11 +211,10 @@ export default class UserMapTab extends React.Component {
           </Text>
         </TouchableOpacity>
         <LocationInfo
+          navigation={this.props.navigation}
           visible={this.state.locationInfo.visible}
-          title={this.state.locationInfo.title}
-          address={this.state.locationInfo.address}
-          latitude={this.state.locationInfo.latitude}
-          longitude={this.state.locationInfo.longitude} />
+          marker={this.state.locationInfo.marker}
+          />
       </View>
     );
   }

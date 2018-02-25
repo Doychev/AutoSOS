@@ -5,13 +5,11 @@ import { Strings } from '../../Strings.js';
 import { Constants } from '../../Constants.js';
 import FadeAnimation from './FadeAnimation';
 var {height, width} = Dimensions.get('window');
-// import openMap from 'react-native-open-maps';
 
 export default class LocationInfo extends React.Component {
 
   onPressMore = () => {
-
-    // openMap({ latitude: this.props.latitude, longitude: this.props.longitude });
+    this.props.navigation.navigate('ShopProfile', {marker: this.props.marker});
   }
 
   render() {
@@ -20,11 +18,11 @@ export default class LocationInfo extends React.Component {
         <View style={styles.wrapper}>
           <View style={styles.container}>
             <View style={styles.title}>
-              <Text ellipsizeMode='tail' numberOfLines={1} style={styles.titleText}>{this.props.title}</Text>
+              <Text ellipsizeMode='tail' numberOfLines={1} style={styles.titleText}>{this.props.marker.name}</Text>
             </View>
             <View style={styles.content}>
               <View style={styles.address}>
-                <Text ellipsizeMode='tail' numberOfLines={2} style={styles.addressText}>{this.props.address}</Text>
+                <Text ellipsizeMode='tail' numberOfLines={2} style={styles.addressText}>{this.props.marker.address}</Text>
               </View>
               <TouchableOpacity onPress={this.onPressMore} style={styles.button}>
                 <Text style={styles.buttonText}>{Strings.MORE_DETAILS}</Text>

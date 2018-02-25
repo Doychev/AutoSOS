@@ -99,7 +99,7 @@ export default class UserHomeScreen extends React.Component {
                  navigation={this.props.navigation} />
             </View>
             <View>
-              <UserMapTab />
+              <UserMapTab navigation={this.props.navigation} />
             </View>
             <View>
               <UserShareTab />

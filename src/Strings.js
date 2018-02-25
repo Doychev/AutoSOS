@@ -120,5 +120,14 @@ export const Strings = {
   SELECTED_REPAIR_SHOP : "Избран сервиз",
   SERVICE_DESCRIPTION : "Описание",
   SUBMITTED_UPDATE : "Описанието беше допълнено успешно. Благодарим Ви!",
-  DESCRIPTION_ADDITION : "Допълнение към описанието"
+  DESCRIPTION_ADDITION : "Допълнение към описанието",
+
+  WRITE_REVIEW : "Напиши оценка",
+  HOW_TO_REACH : "Как да стигна?",
+  ADDRESS: "Адрес",
+  PHONE: "Телефон",
+  TYPE: "Тип",
+  WEBSITE: "Уебсайт",
+  DESCRIPTION: "Описание",
+
 };

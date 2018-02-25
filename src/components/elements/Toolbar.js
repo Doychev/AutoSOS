@@ -53,7 +53,7 @@ export default class Toolbar extends React.Component {
           :
           null
         }
-        <Text style={styles.headerText}>{this.props.title}</Text>
+        <Text style={styles.headerText} ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
         {
           this.props.extraAction ?
           this.renderExtraAction()
@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     fontFamily: 'autobus',
     color: Colors.WHITE,
     fontSize: 20,
+    marginLeft: 50,
+    marginRight: 50,
   },
   backButton: {
     position: 'absolute',
