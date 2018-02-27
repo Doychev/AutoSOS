@@ -169,7 +169,7 @@ export default class ShopProfileScreen extends React.Component {
               <Text style={styles.descriptionText}>{Strings.DESCRIPTION}: {this.state.description}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.ratingText}>{Strings.AVERAGE_RATING}: {this.state.averageRating} / {Strings.OUT_OF_5}</Text>
+              <Text style={styles.ratingText}>{Strings.AVERAGE_RATING}: {this.state.averageRating.toFixed(2)} / {Strings.OUT_OF_5}</Text>
             </View>
           </View>
           <View style={styles.reviews}>
