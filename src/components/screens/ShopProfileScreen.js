@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, FlatList } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Colors } from '../../Colors.js';
 import { Strings } from '../../Strings.js';
@@ -29,6 +29,8 @@ export default class ShopProfileScreen extends React.Component {
       type: "",
       website: "",
       description: "",
+      reviews: [],
+      averageRating: 0,
     };
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
@@ -38,6 +40,8 @@ export default class ShopProfileScreen extends React.Component {
     if (this.props.navigation.state.params != null && this.props.navigation.state.params.marker != null) {
       var marker = this.props.navigation.state.params.marker;
       await this.setState({
+        spinnerVisible: false,
+        dialogDescriptionText: Strings.UNKNOWN_ERROR,
         id : marker.uniqueId,
         name : marker.name,
         image : marker.image,
@@ -49,8 +53,35 @@ export default class ShopProfileScreen extends React.Component {
         description: marker.description,
         latitude: marker.latitude,
         longitude: marker.longitude,
+        alreadyReviewed: false,
       });
     }
+
+    const ref = firebase.database().ref().child('/reviews/' + this.state.id);
+    var data = [];
+    var total = 0, count = 0;
+    ref.once('value', async (snapshot) => {
+      snapshot.forEach(item => {
+        data.push({key: item.key, data: item.val()});
+        total += item.val().rating;
+        count++;
+        if (item.key == firebase.auth().currentUser.uid) {
+          this.setState({
+            alreadyReviewed: true,
+          });
+        }
+      });
+
+      await this.setState({
+        averageRating: total / count,
+        reviews: data,
+      });
+      this.hideSpinner();
+    }, (error) => {
+      this.showError();
+      console.log(error);
+    });
+
     this.hideSpinner();
   }
 
@@ -83,6 +114,20 @@ export default class ShopProfileScreen extends React.Component {
     this.dialog.showDialog();
   }
 
+  keyExtractor = (item, index) => index;
+
+  renderItem = ({item}) => {
+    return (
+      <View>
+        <Text style={styles.reviewItem}>- '{item.data.review}'</Text>
+      </View>
+    );
+  }
+
+  onPressWriteReview = () => {
+    this.props.navigation.navigate('WriteReview', {shopId: this.state.id, shopName: this.state.name});
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -91,12 +136,13 @@ export default class ShopProfileScreen extends React.Component {
         <Dialog ref={(dialog) => { this.dialog = dialog; }} dialogConfirm={this.onPressDialogConfirm} dismissable={false}
           description={this.state.dialogDescriptionText} confirmText={Strings.OK}/>
         <Toolbar showBackButton={true} navigation={this.props.navigation} title={this.state.name.toUpperCase()}/>
-        <ScrollView style={styles.content}>
+        <View style={styles.content}>
           <View style={styles.imageView}>
             {
               this.state.image.length > 0 ?
               <Image style={styles.image} resizeMode='center' source={{uri: this.state.image}}/>
-              : null
+              :
+              <Image style={styles.image} resizeMode='center' source={require('../../images/placeholder.jpg')}/>
             }
           </View>
           <View style={styles.description}>
@@ -122,21 +168,47 @@ export default class ShopProfileScreen extends React.Component {
             <View style={styles.infoRow}>
               <Text style={styles.descriptionText}>{Strings.DESCRIPTION}: {this.state.description}</Text>
             </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.ratingText}>{Strings.AVERAGE_RATING}: {this.state.averageRating} / {Strings.OUT_OF_5}</Text>
+            </View>
           </View>
           <View style={styles.reviews}>
-
+            {
+              this.state.reviews.length > 0 ?
+              <View>
+                <Text>{Strings.REVIEWS}:</Text>
+                <FlatList
+                  style={styles.list}
+                  data={this.state.reviews}
+                  keyExtractor={this.keyExtractor}
+                  renderItem={this.renderItem}
+                  onScroll={this.handleScroll}
+                  />
+              </View>
+              :
+              <Text style={styles.placeholderText}>{Strings.NO_REVIEWS}</Text>
+            }
           </View>
-        </ScrollView>
+        </View>
         <TouchableOpacity style={styles.howToReach} onPress={this.onPressHowToReach}>
           <Text style={styles.submitButtonText}>
             {Strings.HOW_TO_REACH.toUpperCase()}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton} onPress={this.onPressWriteReview}>
-          <Text style={styles.submitButtonText}>
-            {Strings.WRITE_REVIEW.toUpperCase()}
-          </Text>
-        </TouchableOpacity>
+        {
+          !this.state.alreadyReviewed ?
+          <TouchableOpacity style={styles.submitButton} onPress={this.onPressWriteReview}>
+            <Text style={styles.submitButtonText}>
+              {Strings.WRITE_REVIEW.toUpperCase()}
+            </Text>
+          </TouchableOpacity>
+          :
+          <View style={styles.submitButtonPlaceholder}>
+            <Text style={styles.submitButtonText}>
+              {Strings.ALREADY_WRITTEN_REVIEW.toUpperCase()}
+            </Text>
+          </View>
+        }
       </View>
     );
   }
@@ -158,18 +230,25 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   imageView: {
-    flex: 1,
+    flex: 2,
     marginBottom: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image: {
     flex: 1,
     height: 100,
   },
   description: {
-    flex: 1,
+    flex: 3,
+    marginTop: 15,
+    marginBottom: 15,
   },
   reviews: {
-    flex: 1,
+    flex: 3,
+  },
+  placeholderText: {
+    fontStyle: 'italic',
   },
   infoRow: {
     flex: 1,
@@ -185,10 +264,35 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 16,
   },
+  ratingText: {
+    fontSize: 20,
+    color: Colors.GREEN,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
   websiteText: {
     fontSize: 16,
     color: Colors.ACCENT_LIGHT,
     textDecorationLine: 'underline',
+  },
+  reviewItem: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    margin: 2,
+  },
+  list: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 20,
+  },
+  submitButtonPlaceholder: {
+    height: 40,
+    margin: 20,
+    marginTop: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.GRAY,
   },
   submitButton: {
     height: 40,

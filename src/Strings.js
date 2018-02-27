@@ -122,12 +122,25 @@ export const Strings = {
   SUBMITTED_UPDATE : "Описанието беше допълнено успешно. Благодарим Ви!",
   DESCRIPTION_ADDITION : "Допълнение към описанието",
 
-  WRITE_REVIEW : "Напиши оценка",
+  WRITE_REVIEW : "Напиши ревю",
   HOW_TO_REACH : "Как да стигна?",
   ADDRESS: "Адрес",
   PHONE: "Телефон",
   TYPE: "Тип",
   WEBSITE: "Уебсайт",
   DESCRIPTION: "Описание",
+
+  NO_REVIEWS : "Няма ревюта",
+  NO_IMAGE : "Няма снимка",
+
+  RATING_SHOP : "Оценявате сервиз",
+  OUT_OF_5 : "5.00",
+  REVIEW_DESCRIPTION : "Вашият коментар (незадължително)",
+  NO_RATING : "Не сте избрали оценка!",
+  RATING_SUBMITTED : "Ревюто беше изпратено успешно. Благодарим Ви!",
+  ALREADY_WRITTEN_REVIEW : "Вече сте оценили",
+
+  AVERAGE_RATING: "Средна оценка",
+  REVIEWS: "Ревюта",
 
 };
