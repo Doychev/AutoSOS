@@ -49,7 +49,7 @@ export default class IntroScreen extends React.Component {
                 phoneNumber: "",
                 password: "",
                 cars: "",
-                isFbUser: true, //TODO fix that
+                isFbUser: true,
                 userType: "user",
               }, (error) => {
                 this.showError();
@@ -96,7 +96,7 @@ export default class IntroScreen extends React.Component {
   }
 
   onPressIntroRegister = () => {
-    //navigate elsewhere
+    this.props.navigation.navigate('Register');
   }
 
   onPressLogin = async () => {
@@ -105,12 +105,7 @@ export default class IntroScreen extends React.Component {
       isFbReg: false,
     });
 
-    //todo real login
-    this.setState({
-      loginFieldsVisible: false,
-      bottomButtonsVisible: true,
-    });
-    this.hideSpinner();
+    firebase.auth().signInWithEmailAndPassword(this.state.loginEmail, this.state.loginPassword);
   }
 
   onPressFacebook = async () => {

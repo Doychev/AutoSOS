@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, FlatList, ScrollView, Dimensions } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Colors } from '../../Colors.js';
 import { Strings } from '../../Strings.js';
@@ -9,6 +9,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from '../elements/Dialog';
 import * as firebase from 'firebase';
 import openMap from 'react-native-open-maps';
+var {height, width} = Dimensions.get('window');
 
 export default class ShopProfileScreen extends React.Component {
 
@@ -73,7 +74,7 @@ export default class ShopProfileScreen extends React.Component {
       });
 
       await this.setState({
-        averageRating: total / count,
+        averageRating: count > 0 ? total / count : 0,
         reviews: data,
       });
       this.hideSpinner();
@@ -165,9 +166,9 @@ export default class ShopProfileScreen extends React.Component {
               <Text style={styles.descriptionText}>{Strings.WEBSITE}: </Text>
               <Text style={styles.websiteText} onPress={() => Linking.openURL(this.state.website)}>{this.state.website}</Text>
             </View>
-            <View style={styles.infoRow}>
+            <ScrollView style={styles.descriptionRow}>
               <Text style={styles.descriptionText}>{Strings.DESCRIPTION}: {this.state.description}</Text>
-            </View>
+            </ScrollView>
             <View style={styles.infoRow}>
               <Text style={styles.ratingText}>{Strings.AVERAGE_RATING}: {this.state.averageRating.toFixed(2)} / {Strings.OUT_OF_5}</Text>
             </View>
@@ -236,16 +237,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    flex: 1,
     height: 100,
+    width: width,
   },
   description: {
-    flex: 3,
+    flex: 4,
     marginTop: 15,
     marginBottom: 15,
   },
   reviews: {
-    flex: 3,
+    flex: 2,
   },
   placeholderText: {
     fontStyle: 'italic',
@@ -254,6 +255,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  descriptionRow: {
+    height: 40,
     marginTop: 5,
     marginBottom: 5,
   },

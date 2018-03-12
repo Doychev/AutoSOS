@@ -143,4 +143,7 @@ export const Strings = {
   AVERAGE_RATING: "Средна оценка",
   REVIEWS: "Ревюта",
 
+  REGISTRATION: "Регистрация",
+  REGISTER: "Регистрирай се",
+
 };

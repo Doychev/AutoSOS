@@ -153,6 +153,7 @@ export default class UserMapTab extends React.Component {
   hideLocationInfo() {
     this.setState({
       locationInfo: {
+        ...this.state.locationInfo,
         visible: false,
       },
     })

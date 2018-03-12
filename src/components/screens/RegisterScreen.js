@@ -1,117 +1,50 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, AsyncStorage } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, TextInput, AsyncStorage, ScrollView } from 'react-native';
+import { Constants } from '../../Constants.js';
 import { Colors } from '../../Colors.js';
 import { Strings } from '../../Strings.js';
-import { Constants } from '../../Constants.js';
-import Toolbar from '../elements/Toolbar';
-import Spinner from 'react-native-loading-spinner-overlay';
-import Dialog from '../elements/Dialog';
+var {height, width} = Dimensions.get('window');
 import * as firebase from 'firebase';
+import { NavigationUtils } from '../../util/NavigationUtils';
+import Spinner from 'react-native-loading-spinner-overlay';
+import Dialog from './../elements/Dialog';
+import Toolbar from '../elements/Toolbar';
 
-export default class ProfileScreen extends React.Component {
-  static navigationOptions = { title: 'Profile', header: null };
+export default class RegisterScreen extends React.Component {
+  static navigationOptions = { title: 'Register', header: null };
 
   constructor(props) {
     super(props);
     this.state = {
-      spinnerVisible: false,
-      dialogDescriptionText: "",
+      spinnerVisible : false,
+      dialogDescriptionText : Strings.LOGIN_FAILED,
       email: "",
-      isFbUser: "",
       name: "",
       password: "",
       confirmPassword: "",
       phoneNumber: "",
-      shouldGoBack: false,
       cars: [],
       addCarButtonVisible: true,
-    };
+    }
     this.onPressDialogConfirm = this.onPressDialogConfirm.bind(this);
   }
 
-  async componentDidMount() {
-    this.showSpinner();
-    this.loadProfile();
-  }
-
-  async loadProfile() {
-    firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then( async (snapshot) => {
-      if (snapshot.val()) {
-        var user = snapshot.val();
-        await AsyncStorage.setItem(Constants.ASYNC_STORE_USER, JSON.stringify(user));
-        this.setState({
-          savedUserInfo: user,
-          email: user.email,
-          isFbUser: user.isFbUser,
-          name: user.name,
-          phoneNumber: user.phoneNumber,
-          cars: user.cars ? user.cars : [],
+  componentDidMount() {
+    var callToUnsubscribe = firebase.auth().onAuthStateChanged( async (user) => {
+      if (user != null) {
+        firebase.database().ref('/users/' + user.uid).once('value').then( async (snapshot) => {
+          if (snapshot.val()) {
+            await AsyncStorage.setItem(Constants.ASYNC_STORE_USER, JSON.stringify(snapshot.val()));
+          }
+        }, (error) => {
+          this.showError();
         });
         this.hideSpinner();
-      } else {
-        this.showError();
+        callToUnsubscribe();
+        NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'UserHome');
       }
-    }, (error) => {
-      this.showError();
-      console.log(error);
     });
-  }
 
-  onPressDialogConfirm() {
-    this.dialog.hideDialog();
-    if (this.state.shouldGoBack) {
-      this.props.navigation.dispatch(NavigationActions.back());
-    }
-  }
-
-  showSpinner() {
-    this.setState({ spinnerVisible : true});
-  }
-
-  hideSpinner() {
-    this.setState({ spinnerVisible : false});
-  }
-
-  onPressSubmit = async () => {
-    this.showSpinner();
-    if (!this.validateData()) {
-      return;
-    }
-    if (this.state.savedUserInfo) {
-      var updateFields = {
-        email: this.state.email,
-        name: this.state.name,
-        phoneNumber: this.state.phoneNumber,
-      };
-      if (this.state.password.length > 0) {
-        updateFields.password = this.state.password;
-      }
-      if (this.state.cars.length > 0) {
-        updateFields.cars = this.state.cars;
-      }
-      firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update(updateFields, async (error) => {
-        this.hideSpinner();
-        if (error) {
-          this.setState({
-            shouldGoBack: true,
-          });
-          this.showError(Strings.SAVE_FAILED);
-        } else {
-          this.setState({
-            shouldGoBack: true,
-          });
-          //it's not an error, but we reuse the util
-          await AsyncStorage.mergeItem(Constants.ASYNC_STORE_USER, JSON.stringify(updateFields));
-          this.showError(Strings.SAVE_SUCCESS);
-        }
-      });
-    } else {
-      this.setState({
-        shouldGoBack: true,
-      });
-      this.showError(Strings.SAVE_FAILED);
-    }
   }
 
   validateData() {
@@ -139,14 +72,26 @@ export default class ProfileScreen extends React.Component {
     return true;
   }
 
-  showError(message) {
-    if (message) {
-      this.setState({
-        dialogDescriptionText : message,
-      });
+  onPressSubmit = async () => {
+    this.showSpinner();
+    if (!this.validateData()) {
+      return;
     }
-    this.hideSpinner();
-    this.dialog.showDialog();
+
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user) => {
+      var user = firebase.auth().currentUser;
+      firebase.database().ref('/users/' + user.uid).set({
+        name: this.state.name,
+        email: this.state.email,
+        phoneNumber: this.state.phoneNumber,
+        cars: this.state.cars,
+        isFbUser: false,
+        userType: "user",
+      }, (error) => {
+        this.showError();
+        return;
+      });
+    });
   }
 
   onPressAddCar = () => {
@@ -187,6 +132,33 @@ export default class ProfileScreen extends React.Component {
     this.setState({
       cars: cars,
     });
+  }
+
+  onPressDialogConfirm() {
+    this.dialog.hideDialog();
+    if (this.state.reportSucceeded) {
+      this.props.navigation.dispatch(NavigationActions.back());
+    }
+  }
+
+  showSpinner() {
+    this.setState({ spinnerVisible : true});
+  }
+
+  hideSpinner() {
+    this.setState({ spinnerVisible : false});
+  }
+
+  showError(message) {
+    if (message) {
+      this.setState({
+        dialogDescriptionText : message,
+      });
+    }
+    this.hideSpinner();
+    if (this.dialog) {
+      this.dialog.showDialog();
+    }
   }
 
   renderCar(car, i) {
@@ -236,7 +208,7 @@ export default class ProfileScreen extends React.Component {
         <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={Strings.LOADING} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
         <Dialog ref={(dialog) => { this.dialog = dialog; }} dialogConfirm={this.onPressDialogConfirm} dismissable={false}
           description={this.state.dialogDescriptionText} confirmText={Strings.OK}/>
-        <Toolbar showBackButton={true} navigation={this.props.navigation} title={Strings.PROFILE.toUpperCase()}/>
+        <Toolbar showBackButton={true} navigation={this.props.navigation} title={Strings.REGISTRATION.toUpperCase()}/>
         <ScrollView>
           <View style={styles.content}>
             <Text style={styles.sectionTitle}>{Strings.PERSONAL_INFO}</Text>
@@ -254,16 +226,12 @@ export default class ProfileScreen extends React.Component {
               onChangeText={(value) => this.setState({password: value})}
               ref='passwordField' returnKeyType='next' secureTextEntry={true}
               onSubmitEditing={(event) => { this.state.password.length > 0 ? this.refs.confirmPasswordField.focus() : this.refs.phoneNumberField.focus() }}
-              placeholder={Strings.NEW_PASSWORD_PLACEHOLDER} placeholderTextColor={Colors.LIGHT_GRAY} value={this.state.password} />
-            {
-              this.state.password.length > 0 ?
-              <TextInput underlineColorAndroid={Colors.GRAY} style={styles.textEntry}
-                onChangeText={(value) => this.setState({confirmPassword: value})}
-                ref='confirmPasswordField' returnKeyType='next' secureTextEntry={true}
-                onSubmitEditing={(event) => { this.refs.phoneNumberField.focus(); }}
-                placeholder={Strings.CONFIRM_PASSWORD_PLACEHOLDER} placeholderTextColor={Colors.LIGHT_GRAY} value={this.state.confirmPassword} />
-              : null
-            }
+              placeholder={Strings.PASSWORD_PLACEHOLDER} placeholderTextColor={Colors.LIGHT_GRAY} value={this.state.password} />
+            <TextInput underlineColorAndroid={Colors.GRAY} style={styles.textEntry}
+              onChangeText={(value) => this.setState({confirmPassword: value})}
+              ref='confirmPasswordField' returnKeyType='next' secureTextEntry={true}
+              onSubmitEditing={(event) => { this.refs.phoneNumberField.focus(); }}
+              placeholder={Strings.CONFIRM_PASSWORD_PLACEHOLDER} placeholderTextColor={Colors.LIGHT_GRAY} value={this.state.confirmPassword} />
             <TextInput underlineColorAndroid={Colors.GRAY} style={styles.textEntry}
               onChangeText={(value) => this.setState({phoneNumber: value})}
               ref='phoneNumberField' returnKeyType='next'
@@ -288,7 +256,7 @@ export default class ProfileScreen extends React.Component {
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={this.onPressSubmit}>
           <Text style={styles.submitButtonText}>
-            {Strings.SAVE.toUpperCase()}
+            {Strings.REGISTER.toUpperCase()}
           </Text>
         </TouchableOpacity>
       </View>

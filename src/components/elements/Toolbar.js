@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: {
-    fontFamily: 'autobus',
     color: Colors.WHITE,
     fontSize: 20,
     marginLeft: 50,

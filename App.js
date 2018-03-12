@@ -10,6 +10,7 @@ import ServiceReviewScreen from './src/components/screens/ServiceReviewScreen';
 import SupportScreen from './src/components/screens/SupportScreen';
 import ShopProfileScreen from './src/components/screens/ShopProfileScreen';
 import WriteReviewScreen from './src/components/screens/WriteReviewScreen';
+import RegisterScreen from './src/components/screens/RegisterScreen';
 
 const App = StackNavigator({
   Splash: { screen: SplashScreen },
@@ -22,6 +23,7 @@ const App = StackNavigator({
   Support: { screen: SupportScreen },
   ShopProfile: { screen: ShopProfileScreen },
   WriteReview: { screen: WriteReviewScreen },
+  Register: { screen: RegisterScreen },
 }, {
   headerMode: 'none',
 });

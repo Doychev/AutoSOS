@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   addressText: {
-    fontFamily: 'autobus',
     fontSize: 14,
     color: Colors.WHITE,
     marginBottom: 2,
